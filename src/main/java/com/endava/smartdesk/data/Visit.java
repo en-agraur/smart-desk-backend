@@ -10,6 +10,7 @@ public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    private String officeCountry;
     private String officeLocation;
     private String officeName;
     private String visitorFirstName;
@@ -20,6 +21,10 @@ public class Visit {
     private Date arrivalDate;
     private Date departureDate;
     private Date date;
+    @Lob
+    private String visitorSignature;
+    @Lob
+    private String hostSignature;
 
     public Visit() {
     }
@@ -30,6 +35,14 @@ public class Visit {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getOfficeCountry() {
+        return officeCountry;
+    }
+
+    public void setOfficeCountry(String officeCountry) {
+        this.officeCountry = officeCountry;
     }
 
     public String getOfficeLocation() {
@@ -112,6 +125,22 @@ public class Visit {
         this.date = date;
     }
 
+    public String getVisitorSignature() {
+        return visitorSignature;
+    }
+
+    public void setVisitorSignature(String visitorSignature) {
+        this.visitorSignature = visitorSignature;
+    }
+
+    public String getHostSignature() {
+        return hostSignature;
+    }
+
+    public void setHostSignature(String hostSignature) {
+        this.hostSignature = hostSignature;
+    }
+
     @Override
     public String toString() {
         return "Visit{" +
@@ -123,6 +152,11 @@ public class Visit {
                 ", company='" + company + '\'' +
                 ", hostFirstName='" + hostFirstName + '\'' +
                 ", hostLastName='" + hostLastName + '\'' +
+                ", arrivalDate=" + arrivalDate +
+                ", departureDate=" + departureDate +
+                ", date=" + date +
+                ", visitorSignature='" + visitorSignature + '\'' +
+                ", hostSignature='" + hostSignature + '\'' +
                 '}';
     }
 }
