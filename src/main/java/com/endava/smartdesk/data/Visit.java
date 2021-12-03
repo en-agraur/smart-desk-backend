@@ -25,8 +25,10 @@ public class Visit {
     private String visitorSignature;
     @Lob
     private String hostSignature;
+    private Integer visitorCard;
 
     public Visit() {
+        // required empty constructor
     }
 
     public int getId() {
@@ -141,10 +143,19 @@ public class Visit {
         this.hostSignature = hostSignature;
     }
 
+    public Integer getVisitorCard() {
+        return visitorCard;
+    }
+
+    public void setVisitorCard(Integer visitorCard) {
+        this.visitorCard = visitorCard;
+    }
+
     @Override
     public String toString() {
         return "Visit{" +
                 "id=" + id +
+                ", officeCountry='" + officeCountry + '\'' +
                 ", officeLocation='" + officeLocation + '\'' +
                 ", officeName='" + officeName + '\'' +
                 ", visitorFirstName='" + visitorFirstName + '\'' +
@@ -157,6 +168,7 @@ public class Visit {
                 ", date=" + date +
                 ", visitorSignature='" + visitorSignature + '\'' +
                 ", hostSignature='" + hostSignature + '\'' +
+                ", visitorCard=" + visitorCard +
                 '}';
     }
 }

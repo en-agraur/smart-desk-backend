@@ -2,13 +2,11 @@ package com.endava.smartdesk.controllers;
 
 import com.endava.smartdesk.data.Visit;
 import com.endava.smartdesk.repository.VisitRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class VisitController {
 
@@ -26,5 +24,10 @@ public class VisitController {
     @PostMapping("/visit")
     public void postVisit(@RequestBody Visit visit) {
         visitRepository.save(visit);
+    }
+
+    @DeleteMapping("/visit/{id}")
+    void deleteVisit(@PathVariable Integer id) {
+        visitRepository.deleteById(id);
     }
 }
