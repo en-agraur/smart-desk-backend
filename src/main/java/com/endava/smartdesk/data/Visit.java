@@ -10,9 +10,8 @@ public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String officeCountry;
-    private String officeLocation;
-    private String officeName;
+    @ManyToOne
+    private Location location;
     private String visitorFirstName;
     private String visitorLastName;
     private String company;
@@ -23,9 +22,14 @@ public class Visit {
     private Date date;
     @Lob
     private String visitorSignature;
-    @Lob
-    private String hostSignature;
-    private Integer visitorCard;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "visitor_card", referencedColumnName = "id")
+    private Card visitorCard;
+    /**
+     * 0 - finished
+     * 1 - active
+     */
+    private Integer state;
 
     public Visit() {
         // required empty constructor
@@ -39,28 +43,12 @@ public class Visit {
         this.id = id;
     }
 
-    public String getOfficeCountry() {
-        return officeCountry;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setOfficeCountry(String officeCountry) {
-        this.officeCountry = officeCountry;
-    }
-
-    public String getOfficeLocation() {
-        return officeLocation;
-    }
-
-    public void setOfficeLocation(String officeLocation) {
-        this.officeLocation = officeLocation;
-    }
-
-    public String getOfficeName() {
-        return officeName;
-    }
-
-    public void setOfficeName(String officeName) {
-        this.officeName = officeName;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getVisitorFirstName() {
@@ -135,40 +123,19 @@ public class Visit {
         this.visitorSignature = visitorSignature;
     }
 
-    public String getHostSignature() {
-        return hostSignature;
-    }
-
-    public void setHostSignature(String hostSignature) {
-        this.hostSignature = hostSignature;
-    }
-
-    public Integer getVisitorCard() {
+    public Card getVisitorCard() {
         return visitorCard;
     }
 
-    public void setVisitorCard(Integer visitorCard) {
+    public void setVisitorCard(Card visitorCard) {
         this.visitorCard = visitorCard;
     }
 
-    @Override
-    public String toString() {
-        return "Visit{" +
-                "id=" + id +
-                ", officeCountry='" + officeCountry + '\'' +
-                ", officeLocation='" + officeLocation + '\'' +
-                ", officeName='" + officeName + '\'' +
-                ", visitorFirstName='" + visitorFirstName + '\'' +
-                ", visitorLastName='" + visitorLastName + '\'' +
-                ", company='" + company + '\'' +
-                ", hostFirstName='" + hostFirstName + '\'' +
-                ", hostLastName='" + hostLastName + '\'' +
-                ", arrivalDate=" + arrivalDate +
-                ", departureDate=" + departureDate +
-                ", date=" + date +
-                ", visitorSignature='" + visitorSignature + '\'' +
-                ", hostSignature='" + hostSignature + '\'' +
-                ", visitorCard=" + visitorCard +
-                '}';
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
 }
