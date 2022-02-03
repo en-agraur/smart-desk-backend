@@ -21,11 +21,6 @@ public class CardController {
         return cardRepository.findAll();
     }
 
-    @GetMapping("/available-cards")
-    public List<Card> getAvailableCard() {
-        return cardRepository.findByState(0);
-    }
-
     @PostMapping("/card")
     public void postCard(@RequestBody Card card) {
         cardRepository.save(card);
