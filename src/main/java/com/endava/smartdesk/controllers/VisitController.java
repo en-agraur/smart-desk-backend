@@ -2,6 +2,7 @@ package com.endava.smartdesk.controllers;
 
 import com.endava.smartdesk.data.Card;
 import com.endava.smartdesk.data.CardState;
+import com.endava.smartdesk.data.Period;
 import com.endava.smartdesk.data.Visit;
 import com.endava.smartdesk.repository.CardRepository;
 import com.endava.smartdesk.repository.VisitRepository;
@@ -27,6 +28,11 @@ public class VisitController {
     @GetMapping("/visits")
     public List<Visit> getVisits() {
         return visitRepository.findAll();
+    }
+
+    @PostMapping("/visits-by-period")
+    public List<Visit> getVisitsByPeriod(@RequestBody Period period) {
+        return visitRepository.findByDateBetween(period.getFrom(), period.getTo());
     }
 
     @PostMapping("/visit")
