@@ -1,53 +1,22 @@
 package com.endava.smartdesk.data;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "location")
+@Data
 public class Location {
+
+    public static final String COLUMN_LOCATION_NAME = "name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @Column(name = COLUMN_LOCATION_NAME, nullable = false)
     private String name;
-    private String url;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "city", referencedColumnName = "id")
     private City city;
-
-    public Location() {
-
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
 }

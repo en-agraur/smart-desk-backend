@@ -1,33 +1,63 @@
 package com.endava.smartdesk.controllers;
 
-import com.endava.smartdesk.data.Card;
-import com.endava.smartdesk.data.CardState;
-import com.endava.smartdesk.data.Period;
-import com.endava.smartdesk.data.Visit;
+import com.endava.smartdesk.data.*;
 import com.endava.smartdesk.repository.CardRepository;
+import com.endava.smartdesk.repository.LocationRepository;
 import com.endava.smartdesk.repository.VisitRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
+@Slf4j
 public class VisitController {
 
     private final VisitRepository visitRepository;
     private final CardRepository cardRepository;
+    private final LocationRepository locationRepository;
 
     public VisitController(VisitRepository visitRepository,
-                           CardRepository cardRepository) {
+                           CardRepository cardRepository,
+                           LocationRepository locationRepository) {
         this.visitRepository = visitRepository;
         this.cardRepository = cardRepository;
+        this.locationRepository = locationRepository;
     }
 
     @GetMapping("/visits")
     public List<Visit> getVisits() {
-        return visitRepository.findAll();
+        List<Visit> visits = visitRepository.findAll();
+        log.info(visits.toString());
+        return visits;
+    }
+
+    @GetMapping("/visits/{id}")
+    public ResponseEntity<List<Visit>> getVisitsByLocation(@PathVariable Integer id) {
+        Optional<Location> location = locationRepository.findById(id);
+
+        if (location.isPresent()) {
+            List<Card> cards = cardRepository.findByLocation(location.get());
+            return new ResponseEntity<>(visitRepository.findByVisitorCardIn(cards), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+        }
+    }
+
+    @PostMapping("/visits-by-period/{id}")
+    public ResponseEntity<List<Visit>> getVisitsByLocationAndPeriod(@PathVariable Integer id, @RequestBody Period period) {
+        Optional<Location> location = locationRepository.findById(id);
+
+        if (location.isPresent()) {
+            List<Card> cards = cardRepository.findByLocation(location.get());
+            return new ResponseEntity<>(visitRepository.findByVisitorCardInAndDateBetween(cards, period.getFrom(), period.getTo()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+        }
     }
 
     @PostMapping("/visits-by-period")

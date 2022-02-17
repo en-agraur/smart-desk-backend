@@ -1,44 +1,22 @@
 package com.endava.smartdesk.data;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "city")
+@Data
 public class City {
+
+    public static final String COLUMN_CITY_NAME = "name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @Column(name = COLUMN_CITY_NAME, nullable = false)
     private String name;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "country", referencedColumnName = "id")
     private Country country;
-
-    public City() {
-
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
 }

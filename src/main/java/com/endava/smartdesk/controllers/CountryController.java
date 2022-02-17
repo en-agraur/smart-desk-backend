@@ -19,7 +19,7 @@ public class CountryController {
 
     @GetMapping("/countries")
     private List<Country> getCountries() {
-        return countryRepository.findAll(Sort.by(Sort.Direction.ASC, Country.COLUMN_NAME));
+        return countryRepository.findAll(Sort.by(Sort.Direction.ASC, Country.COLUMN_COUNTRY_NAME));
     }
 
     @PostMapping("/country")

@@ -1,141 +1,45 @@
 package com.endava.smartdesk.data;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "visit")
+@Data
 public class Visit {
+
+    public static final String COLUMN_VISIT_VISITOR_FIRST_NAME = "visitorFirstName";
+    public static final String COLUMN_VISIT_VISITOR_LAST_NAME = "visitorLastName";
+    public static final String COLUMN_VISIT_VISITOR_SIGNATURE = "visitorSignature";
+    public static final String COLUMN_VISIT_COMPANY = "company";
+    public static final String COLUMN_VISIT_DATE = "date";
+    public static final String COLUMN_VISIT_ARRIVAL_DATE = "arrivalDate";
+    public static final String COLUMN_VISIT_STATE = "state";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @ManyToOne
-    private Location location;
+    @Column(name = COLUMN_VISIT_VISITOR_FIRST_NAME, nullable = false)
     private String visitorFirstName;
+    @Column(name = COLUMN_VISIT_VISITOR_LAST_NAME, nullable = false)
     private String visitorLastName;
+    @Column(name = COLUMN_VISIT_COMPANY, nullable = false)
     private String company;
     private String hostFirstName;
     private String hostLastName;
+    @Column(name = COLUMN_VISIT_ARRIVAL_DATE, nullable = false)
     private Date arrivalDate;
     private Date departureDate;
+    @Column(name = COLUMN_VISIT_DATE, nullable = false)
     private Date date;
     @Lob
+    @Column(name = COLUMN_VISIT_VISITOR_SIGNATURE, nullable = false)
     private String visitorSignature;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "visitor_card", referencedColumnName = "id")
     private Card visitorCard;
-    /**
-     * 0 - finished
-     * 1 - active
-     */
+    @Column(name = COLUMN_VISIT_STATE, nullable = false)
     private Integer state;
-
-    public Visit() {
-        // required empty constructor
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public String getVisitorFirstName() {
-        return visitorFirstName;
-    }
-
-    public void setVisitorFirstName(String visitorFirstName) {
-        this.visitorFirstName = visitorFirstName;
-    }
-
-    public String getVisitorLastName() {
-        return visitorLastName;
-    }
-
-    public void setVisitorLastName(String visitorLastName) {
-        this.visitorLastName = visitorLastName;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getHostFirstName() {
-        return hostFirstName;
-    }
-
-    public void setHostFirstName(String hostFirstName) {
-        this.hostFirstName = hostFirstName;
-    }
-
-    public String getHostLastName() {
-        return hostLastName;
-    }
-
-    public void setHostLastName(String hostLastName) {
-        this.hostLastName = hostLastName;
-    }
-
-    public Date getArrivalDate() {
-        return arrivalDate;
-    }
-
-    public void setArrivalDate(Date arrivalDate) {
-        this.arrivalDate = arrivalDate;
-    }
-
-    public Date getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(Date departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getVisitorSignature() {
-        return visitorSignature;
-    }
-
-    public void setVisitorSignature(String visitorSignature) {
-        this.visitorSignature = visitorSignature;
-    }
-
-    public Card getVisitorCard() {
-        return visitorCard;
-    }
-
-    public void setVisitorCard(Card visitorCard) {
-        this.visitorCard = visitorCard;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
 }
