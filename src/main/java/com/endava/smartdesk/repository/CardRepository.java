@@ -10,8 +10,10 @@ import java.util.List;
 @Repository
 public interface CardRepository extends JpaRepository<Card, Integer> {
 
-    List<Card> findByState(Integer state);
-
     List<Card> findByLocation(Location location);
+
+    List<Card> findByCardNumberAndLocation(Integer cardNumber, Location location);
+
+    List<Card> findByStateAndLocation(Integer state, Location location);
 
 }

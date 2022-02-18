@@ -4,6 +4,7 @@ import com.endava.smartdesk.data.Card;
 import com.endava.smartdesk.data.Location;
 import com.endava.smartdesk.repository.CardRepository;
 import com.endava.smartdesk.repository.LocationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
+@Slf4j
 public class CardController {
 
     private final CardRepository cardRepository;
@@ -24,26 +26,42 @@ public class CardController {
         this.locationRepository = locationRepository;
     }
 
-    @GetMapping("/cards")
-    public List<Card> getCards() {
-        return cardRepository.findAll();
+    @GetMapping("/cards/{locationId}")
+    public ResponseEntity<List<Card>> getCardsByLocation(@PathVariable Integer locationId) {
+        Optional<Location> location = locationRepository.findById(locationId);
+
+        if (location.isPresent()) {
+            List<Card> cards = cardRepository.findByLocation(location.get());
+            return new ResponseEntity<>(cards, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
-    @GetMapping("/cards/{id}")
-    public ResponseEntity<List<Card>> getCardsByLocation(@PathVariable Integer id) {
-        Optional<Location> location = locationRepository.findById(id);
-        return location.map(value -> new ResponseEntity<>(cardRepository.findByLocation(value),
-                HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY));
+    @PostMapping("/card/{locationId}")
+    public ResponseEntity<Void> postCard(@PathVariable Integer locationId, @RequestBody Card card) {
+        Optional<Location> location = locationRepository.findById(locationId);
 
+        if (location.isPresent()) {
+            List<Card> cards = cardRepository.findByCardNumberAndLocation(card.getCardNumber(), location.get());
+
+            if (cards.isEmpty()) {
+                card.setLocation(location.get());
+                cardRepository.save(card);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                log.info("A card with number " + card.getCardNumber() + " is already assigned to the location " +
+                        location.get());
+            }
+        } else {
+            log.info("Couldn't find location with id " + locationId + " when trying to add a new card");
+        }
+
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
-    @PostMapping("/card")
-    public void postCard(@RequestBody Card card) {
-        cardRepository.save(card);
-    }
-
-    @DeleteMapping("/card/{id}")
-    public void deleteCard(@PathVariable Integer id) {
-        cardRepository.deleteById(id);
+    @DeleteMapping("/card/{cardId}")
+    public void deleteCard(@PathVariable Integer cardId) {
+        cardRepository.deleteById(cardId);
     }
 }

@@ -48,9 +48,9 @@ public class VisitController {
         }
     }
 
-    @PostMapping("/visits-by-period/{id}")
-    public ResponseEntity<List<Visit>> getVisitsByLocationAndPeriod(@PathVariable Integer id, @RequestBody Period period) {
-        Optional<Location> location = locationRepository.findById(id);
+    @PostMapping("/visits-by-period/{locationId}")
+    public ResponseEntity<List<Visit>> getVisitsByLocationAndPeriod(@PathVariable Integer locationId, @RequestBody Period period) {
+        Optional<Location> location = locationRepository.findById(locationId);
 
         if (location.isPresent()) {
             List<Card> cards = cardRepository.findByLocation(location.get());
@@ -65,31 +65,40 @@ public class VisitController {
         return visitRepository.findByDateBetween(period.getFrom(), period.getTo());
     }
 
-    @PostMapping("/visit")
-    public ResponseEntity<Card> postVisit(@RequestBody Visit visit) {
-        List<Card> availableCards = cardRepository.findByState(CardState.AVAILABLE.getState());
+    @PostMapping("/visit/{locationId}")
+    public ResponseEntity<Card> postVisit(@PathVariable Integer locationId, @RequestBody Visit visit) {
+        Optional<Location> location = locationRepository.findById(locationId);
 
-        if (!availableCards.isEmpty()) {
-            Card card = availableCards.get(0);
-            card.setState(CardState.ASSIGNED.getState());
-            cardRepository.save(card);
-            visit.setVisitorCard(card);
-            visitRepository.save(visit);
-            return new ResponseEntity<>(card, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+        if (location.isPresent()) {
+            List<Card> availableCards = cardRepository.findByStateAndLocation(CardState.AVAILABLE.getState(), location.get());
+
+            if (!availableCards.isEmpty()) {
+                Card card = availableCards.get(0);
+                card.setState(CardState.ASSIGNED.getState());
+                cardRepository.save(card);
+                visit.setVisitorCard(card);
+                visitRepository.save(visit);
+                return new ResponseEntity<>(card, HttpStatus.OK);
+            }
         }
+
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
     @PostMapping("/update-visit/{visitId}/{visitState}/{cardState}")
-    public void updateVisit(@PathVariable Integer visitId, @PathVariable Integer visitState,
-                            @PathVariable Integer cardState) {
-        Visit visit = visitRepository.getById(visitId);
-        Card card = visit.getVisitorCard();
-        card.setState(cardState);
-        cardRepository.save(card);
-        visit.setState(visitState);
-        visitRepository.save(visit);
+    public ResponseEntity<Void> updateVisit(@PathVariable Integer visitId, @PathVariable Integer visitState,
+                                            @PathVariable Integer cardState) {
+        Optional<Visit> visit = visitRepository.findById(visitId);
+
+        if (visit.isPresent()) {
+            Card card = visit.get().getVisitorCard();
+            card.setState(cardState);
+            cardRepository.save(card);
+            visit.get().setState(visitState);
+            visitRepository.save(visit.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
     @DeleteMapping("/visit/{id}")
