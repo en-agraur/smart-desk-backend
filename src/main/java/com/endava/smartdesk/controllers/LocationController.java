@@ -29,7 +29,7 @@ public class LocationController {
     }
 
     @GetMapping("locations-by-city/{cityId}")
-    public ResponseEntity<List<Location>> getLocationsByCity(@PathVariable Integer cityId, @RequestBody Location location) {
+    public ResponseEntity<List<Location>> getLocationsByCity(@PathVariable Integer cityId) {
         Optional<City> city = cityRepository.findById(cityId);
 
         if (city.isPresent()) {
@@ -43,6 +43,19 @@ public class LocationController {
     @PostMapping("/location")
     public void postLocation(@RequestBody Location location) {
         locationRepository.save(location);
+    }
+
+    @PostMapping("/location/{cityId}")
+    public ResponseEntity<Void> postLocation(@PathVariable Integer cityId, @RequestBody Location location) {
+        Optional<City> city = cityRepository.findById(cityId);
+
+        if (city.isPresent()) {
+            location.setCity(city.get());
+            locationRepository.save(location);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
     @DeleteMapping("/location/{id}")

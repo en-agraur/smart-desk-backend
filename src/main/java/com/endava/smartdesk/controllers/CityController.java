@@ -53,6 +53,12 @@ public class CityController {
         return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
     }
 
+    @PostMapping("/city")
+    public ResponseEntity<Void> postCity(@RequestBody City city) {
+        cityRepository.save(city);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping("/city/{id}")
     public void deleteCity(@PathVariable Integer id) {
         cityRepository.deleteById(id);
