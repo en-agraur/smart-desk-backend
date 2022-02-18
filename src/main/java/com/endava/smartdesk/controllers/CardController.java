@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,20 @@ public class CardController {
             }
         } else {
             log.info("Couldn't find location with id " + locationId + " when trying to add a new card");
+        }
+
+        return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    @PostMapping("/card-update/{cardId}/{cardState}")
+    public ResponseEntity<Void> updateCard(@PathVariable Integer cardId, @PathVariable Integer cardState) {
+        Optional<Card> card = cardRepository.findById(cardId);
+
+        if (card.isPresent()) {
+            card.get().setStateDate(new Date(System.currentTimeMillis()));
+            card.get().setState(cardState);
+            cardRepository.save(card.get());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);

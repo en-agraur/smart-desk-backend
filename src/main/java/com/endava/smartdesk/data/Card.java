@@ -3,6 +3,7 @@ package com.endava.smartdesk.data;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "card")
@@ -12,6 +13,7 @@ public class Card {
     public static final String COLUMN_CARD_NUMBER = "cardNumber";
     public static final String COLUMN_CARD_IDENTIFIER = "cardIdentifier";
     public static final String COLUMN_CARD_STATE = "state";
+    public static final String COLUMN_CARD_STATE_DATE = "state_date";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,4 +27,6 @@ public class Card {
     private Location location;
     @Column(name = COLUMN_CARD_STATE, nullable = false)
     private Integer state;
+    @Column(name = COLUMN_CARD_STATE_DATE)
+    private Date stateDate;
 }
