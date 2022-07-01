@@ -1,6 +1,7 @@
 package com.endava.smartdesk.controllers;
 
 import com.endava.smartdesk.data.Card;
+import com.endava.smartdesk.data.DeletedState;
 import com.endava.smartdesk.data.Location;
 import com.endava.smartdesk.repository.CardRepository;
 import com.endava.smartdesk.repository.LocationRepository;
@@ -32,7 +33,8 @@ public class CardController {
         Optional<Location> location = locationRepository.findById(locationId);
 
         if (location.isPresent()) {
-            List<Card> cards = cardRepository.findByLocation(location.get());
+            List<Card> cards = cardRepository.findByLocationAndDeleted(location.get(),
+                    DeletedState.AVAILABLE.getState());
             return new ResponseEntity<>(cards, HttpStatus.OK);
         }
 
@@ -44,16 +46,9 @@ public class CardController {
         Optional<Location> location = locationRepository.findById(locationId);
 
         if (location.isPresent()) {
-            List<Card> cards = cardRepository.findByCardNumberAndLocation(card.getCardNumber(), location.get());
-
-            if (cards.isEmpty()) {
-                card.setLocation(location.get());
-                cardRepository.save(card);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                log.info("A card with number " + card.getCardNumber() + " is already assigned to the location " +
-                        location.get());
-            }
+            card.setLocation(location.get());
+            cardRepository.save(card);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             log.info("Couldn't find location with id " + locationId + " when trying to add a new card");
         }

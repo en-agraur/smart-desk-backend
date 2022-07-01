@@ -70,7 +70,8 @@ public class VisitController {
         Optional<Location> location = locationRepository.findById(locationId);
 
         if (location.isPresent()) {
-            List<Card> availableCards = cardRepository.findByStateAndLocation(CardState.AVAILABLE.getState(), location.get());
+            List<Card> availableCards = cardRepository.findByStateAndLocationAndDeleted(CardState.AVAILABLE.getState(),
+                    location.get(), DeletedState.AVAILABLE.getState());
 
             if (!availableCards.isEmpty()) {
                 Card card = availableCards.get(0);

@@ -12,8 +12,8 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
 
     List<Card> findByLocation(Location location);
 
-    List<Card> findByCardNumberAndLocation(Integer cardNumber, Location location);
+    List<Card> findByLocationAndDeleted(Location location, Integer deleted);
 
-    List<Card> findByStateAndLocation(Integer state, Location location);
+    List<Card> findByStateAndLocationAndDeleted(Integer state, Location location, Integer deleted);
 
 }

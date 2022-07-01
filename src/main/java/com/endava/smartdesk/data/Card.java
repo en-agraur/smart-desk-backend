@@ -14,6 +14,7 @@ public class Card {
     public static final String COLUMN_CARD_IDENTIFIER = "cardIdentifier";
     public static final String COLUMN_CARD_STATE = "state";
     public static final String COLUMN_CARD_STATE_DATE = "state_date";
+    public static final String COLUMN_CARD_DELETED = "deleted";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,4 +30,6 @@ public class Card {
     private Integer state;
     @Column(name = COLUMN_CARD_STATE_DATE)
     private Date stateDate;
+    @Column(name = COLUMN_CARD_DELETED)
+    private Integer deleted;
 }
