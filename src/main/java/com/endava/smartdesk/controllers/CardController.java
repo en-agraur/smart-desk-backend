@@ -74,4 +74,15 @@ public class CardController {
     public void deleteCard(@PathVariable Integer cardId) {
         cardRepository.deleteById(cardId);
     }
+
+    @GetMapping("/fix-cards")
+    public ResponseEntity<Void> fixCards() {
+        List<Card> cards = cardRepository.findAll();
+
+        for (Card card : cards) {
+            card.setDeleted(DeletedState.AVAILABLE.getState());
+            cardRepository.save(card);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
