@@ -72,17 +72,12 @@ public class CardController {
 
     @DeleteMapping("/card/{cardId}")
     public void deleteCard(@PathVariable Integer cardId) {
-        cardRepository.deleteById(cardId);
-    }
+        Optional<Card> optionalCard = cardRepository.findById(cardId);
 
-    @GetMapping("/fix-cards")
-    public ResponseEntity<Void> fixCards() {
-        List<Card> cards = cardRepository.findAll();
-
-        for (Card card : cards) {
-            card.setDeleted(DeletedState.AVAILABLE.getState());
+        if (optionalCard.isPresent()) {
+            Card card = optionalCard.get();
+            card.setDeleted(DeletedState.DELETED.getState());
             cardRepository.save(card);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
